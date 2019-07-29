@@ -5,13 +5,33 @@ from graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def generate_names(n = 9, f_name = "names.txt"):
+
+def generate_names(n=9, f_name="names.txt"):
+    """
+    Generate fake names.
+
+    Args:
+        n (int): Number of fake names to generate.
+        f_name (string): The file name or file path to save
+        the generated names in.
+    """
     fake = Faker()
     with open(f_name, "w") as f:
         for _ in range(int(n)):
             f.write(f"{fake.name()}\n")
 
+
 def generate_graph(your_name, names_file="names.txt", f_name="graph_data.txt"):
+    """
+    Generate a graph from names and save its representation to a file.
+
+    Args:
+        your_name (string): Your name.
+        names_file (string): The file name or file path to read in
+        friend names from.
+        f_name (string): The file name or file path to save the generated
+        graph representation in.
+    """
     with open(f_name, "w") as f:
         # write graph type
         f.write("G\n")
@@ -27,25 +47,39 @@ def generate_graph(your_name, names_file="names.txt", f_name="graph_data.txt"):
             # create a copy of friends without current friend
             other_friends = [i for i in friends if i != friend]
             # generate a random sample of 2-4 other friends
-            idx_sample = random.sample(range(len(other_friends)), random.randint(2, 4))
+            idx_sample = random.sample(
+                range(len(other_friends)), random.randint(2, 4))
             # edge from friend to 2-4 other distinct friends
             for idx in idx_sample:
                 f.write(f"({friend},{other_friends[idx]})\n")
 
+
 def draw_graph(graph_file="graph_data.txt", f_name="social_path.png"):
+    """
+    Create a graph object from a file, draw the graph on the screen,
+    and output it to a .png image file.
+
+    Args:
+        graph_file (string): The file name or file path to read in
+        a graph representation from.
+        f_name (string): The file name or file path to save the
+        generated figure to as a .png image.
+    """
     # create graph from file
     g = Graph(graph_file)
     # create nx graph with edges
     nxGraph = nx.DiGraph(g.get_edges())
-    plt.figure(1,figsize=(12,9))
+    plt.figure(1, figsize=(12, 9))
     plt.margins(0.1)
     # draw graph
-    nx.draw_shell(nxGraph, with_labels=True, node_size=9000, font_size=10, width=1.4, font_color='w')
-    
+    nx.draw_shell(nxGraph, with_labels=True, node_size=9000,
+                  font_size=10, width=1.4, font_color='w')
+
     # save to png
     plt.savefig(f_name)
     # display on screen
     plt.show()
+
 
 if __name__ == "__main__":
     if sys.argv[1] == 'generate_names':
